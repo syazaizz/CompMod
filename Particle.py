@@ -85,20 +85,6 @@ class Particle(object):
     # call Particle __init__ method
     @staticmethod
     def from_file(file_handle):
-        """
-        line = file_handle.readline()
-        data = line.split(",")
-        data = [float(data) for i in data]
-        pos = np.array([float(i) for i in data[0:3]])
-        #print(pos)
-        vel = np.array([float(i) for i in data[3:6]])
-        #print(vel)
-        mass = np.array([float(i) for i in data[6:7]])
-        #print(mass)
-        label = data[7].strip('\n')
-        return Particle(pos, vel, mass, label)
-        """
-
 
         line = file_handle.readline()
         data = line.split(",")
@@ -128,9 +114,9 @@ class Particle(object):
     #gravitational potential energy between two particles
     @staticmethod
     def pot_energy(p1,p2):
-        return -1*p1.mass*p2.mass/np.linalg.norm(Vect_Sep(p1,p2))
+        return -1*p1.mass*p2.mass/np.linalg.norm(Particle.Vect_Sep(p1,p2))
 
     #gravitational force between two particles
     @staticmethod
     def force(p1,p2):
-        return (-1*p1.mass*p2.mass/(np.linalg.norm(Vect_Sep(p1,p2)))**3)*Vect_Sep(p1,p2)
+        return (-1*p1.mass*p2.mass/(np.linalg.norm(Particle.Vect_Sep(p1,p2)))**3)*Particle.Vect_Sep(p1,p2)
