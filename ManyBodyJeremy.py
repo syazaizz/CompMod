@@ -47,11 +47,11 @@ def main():
     parameters = open(parameter_file, "r")            # Opens parameter file
     line = parameters.readline()                      # Reads each line from file
     tokena = line.split(",")                          # Splits line into a list, using comma
-    dt = tokena[0]                                    # Timestep read from first element
-    numstep = tokena[1]                               # Range read from last element
+    dt = float(tokena[0])                             # Timestep read from first element
+    numstep = float(tokena[1])                        # Range read from last element
     time = 0.0                                        # Initial time set to zero
 
-    print("Timestep (days) = " + dt + "; Range (days) = " + numstep)
+    print("Timestep (days) = " + str(dt) + "; Range (days) = " + str(numstep))
 
 
     # READ PARTICLES AND INITIAL CONDITIONS: Particle information and initial
@@ -88,30 +88,33 @@ def main():
 
     # INITIAL FORCE CALCULATION (5.2)
     calc = np.zeros(3)
-    forces = []
-    #forces = np.zeros((quantity, 3))
-    #print(forces)
+    #forces = []
+    a = 0
+    forces = np.zeros((quantity, 3))
     for i in particles:
         for j in particles:
             if i != j:
                 calc += i.force(i,j)
         #print(calc)
-        forces.append(calc)
+        #forces.append(calc)
+        forces[a] = calc
         calc = np.zeros(3)
+        a += 1
     print(forces)
 
 
     # TIME INTEGRATION LOOP
     time = 0
-    for i in particles:
+    for time in range(0, int(numstep), int(dt)):
+    #for i in particles:
 
         # UPDATE PARTICLE POSITIONS
         a = 0
-        b = 0
-        #print(forces[1][2])
+        print(forces[a])
+        #print(type(forces[a][0]))
         for j in particles:
-            j.leap_pos2nd(dt, float(forces[a]))
-            a += 1
+            j.leap_pos2nd(dt, forces[a])
+        a += 1
         
         # UPDATE FORCES
         calc = np.zeros(3)
@@ -138,14 +141,15 @@ def main():
         time += dt
         
         # WRITE DATA TO OUTPUT FILE
-        trajectory.write(quantity)
+        trajectory.write(str(quantity))
         trajectory.write("\n")
-        trajectory.write("Point = " + dt)
+        trajectory.write("Point = " + str(time))
         trajectory.write("\n")
         for iterate in particles:
             trajectory.write(iterate.__str__())
             trajectory.write("\n")
-        trajectory.close()
+
+    trajectory.close()
 
 
 main()
